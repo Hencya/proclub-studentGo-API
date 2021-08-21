@@ -1,14 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const fs = require('fs');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 // routes
 const eventContentRoutes = require('./routes/event');
 const authRoutes = require('./routes/auth');
 
 dotenv.config();
+
 const app = express();
 
 // connecting to DB
@@ -23,6 +24,12 @@ mongoose.connect(process.env.MONGO_URI, {
   });
 }).catch((err) => console.log(err));
 
+// middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static(`${__dirname}/public`));
+app.use('/uploads', express.static('uploads'));
+
 // Creating uploads folder if not already present
 // In "uploads" folder we will temporarily upload
 // image before uploading to cloudinary
@@ -30,11 +37,5 @@ if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
 
-// middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static(`${__dirname}/public`));
-app.use('/uploads', express.static('uploads'));
-
 app.use('/api/v1/users', authRoutes);
-app.use('/api/v1/event', eventContentRoutes);
+app.use('/api/v1/events', eventContentRoutes);

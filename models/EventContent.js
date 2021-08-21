@@ -30,6 +30,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  deadline: {
+    type: Date,
+    required: true,
+  },
   date_start_event: {
     type: Date,
     required: true,

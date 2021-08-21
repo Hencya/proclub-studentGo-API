@@ -1,5 +1,6 @@
 const cloudinary = require('../utils/cloudinary');
 const EventContent = require('../models/EventContent');
+const ArchiveEvent = require('../models/ArchiveEvent');
 
 module.exports = {
   createEventContent: async (req, res) => {
@@ -37,6 +38,7 @@ module.exports = {
         broadcast_media,
         category,
         description,
+        deadline,
         date_start_event,
         date_end_event,
         start_event,
@@ -56,6 +58,7 @@ module.exports = {
         broadcast_media,
         category,
         description,
+        deadline,
         date_start_event,
         date_end_event,
         start_event,
@@ -82,13 +85,14 @@ module.exports = {
         name_bank,
       });
 
-      // untuk nampung jika terjadi error
+      // untuk nampung jika terjadi error (hapus images di cloudinary)
       publicIdList.push(newPoster.public_id);
       publicIdList.push(newLogo.public_id);
       publicIdList.push(newImage1.public_id);
       publicIdList.push(newImage2.public_id);
       publicIdList.push(newImage3.public_id);
       publicIdList.push(newImage4.public_id);
+
       const savedEventContent = await newEventContent.save();
 
       res.status(201).json({
@@ -103,7 +107,7 @@ module.exports = {
           await cloudinary.uploader.destroy(publicIdList[i]);
         }
         publicIdList.splice(0, publicIdList.length);
-        return res.status(409).json({ message: 'The same event has been uploaded' });
+        return res.status(409).json({ message: 'Cloudinary Id must be unique' });
       }
       for (let i = 0; i < publicIdList.length; i++) {
         await cloudinary.uploader.destroy(publicIdList[i]);
@@ -113,58 +117,93 @@ module.exports = {
     }
   },
 
-  // getFiveLastestEvent: async (req, res) => {
-  //   try {
-  //     const eventContents = await EventContent.find().select(
-  //       'title imageUrl date_start_event description slug _id tags category',
-  //     ).limit(5).sort({ created_at: 'desc' });
-  //     if (!eventContents) {
-  //       res.status(404).json({
-  //         status: 404,
-  //         message: "Event Doesn't Exist ",
-  //       });
-  //     }
+  getAllEventContentSkipFive: async (req, res) => {
+    try {
+      const events = await EventContent.find().select(
+        '_id title poster deadline description slug tags',
+      ).skip(5).sort({ createdAt: 'desc' });
 
-  //     res.status(200).json({
-  //       status: 200,
-  //       message: 'Succes Get 5 Latest Event',
-  //       result: eventContents,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ message: error });
-  //   }
-  // },
+      if (!events) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
 
-  // getOneEventBySlug: async (req, res) => {
-  //   try {
-  //     const { slug } = req.params;
-  //     //! nanti diganti dengan req.user => ganti req.params dengan req.user dan hapus params di ROUTES dan POSTMAN
-  //     const { userId } = req.params;
-  //     const scholarship = await EventContent.findOne({ slug }).select(
-  //       '_id slug event category date_start_event date_end_event start_event end_event organizer_name no_hp organizer_email broadcast_media imagesUrl tags price  description ',
-  //     ).lean(); // .lean() berfungsi agar document scholarship bisa ditambahkan key value baru (menambahkan element baru) dan mempercepat kinerja find
-  //     if (userId) { // jika ditemukan user
-  //       const archieve_event = await ArchiveEvent.findOne({ user: userId, event: Event._id });
-  //       if (archieve_event) { // jika user sudah menyimpan arsip
-  //         event.is_saved = true;
-  //         event.is_login = true;
-  //         event.trigger_id = archieve_event._id;
-  //       } else { // jika user belum menyimpan arsip
-  //         event.is_saved = false;
-  //         event.is_login = true;
-  //         event.trigger_id = Event._id;
-  //       }
-  //     } else { // jika tidak ditemukan user
-  //       event.is_saved = false;
-  //       event.is_login = false;
-  //       event.trigger_id = false;
-  //     }
-  //     res.status(200).json({ status: 200, message: 'Success Get One Event', result: scholarship });
-  //   } catch (err) {
-  //     console.error(err);
-  //     res.status(500).json({ message: err });
-  //   }
-  // },
+      res.status(200).json({
+        status: 200,
+        message: 'Success Get All Events',
+        result: events,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  },
+
+  getLatestEventContent: async (req, res) => {
+    try {
+      const events = await EventContent.find().select(
+        '_id title poster deadline description slug tags',
+      ).limit(5).sort({ createdAt: 'desc' });
+
+      if (!events) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'Success Get 5 Latest Events',
+        result: events,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  },
+
+  getEventContentBySlug: async (req, res) => {
+    try {
+      const { slug } = req.params;
+      //! nanti diganti dengan req.user => ganti req.params dengan req.user dan hapus params di ROUTES dan POSTMAN
+      const { userId } = req.params;
+
+      const event = await EventContent.findOne({ slug }).select(
+        '_id slug poster logo user title broadcast_media category description',
+        'start_event end_event tags price organizer_name no_hp ',
+        'organizer_email poster logo image_1 image_2 image_3 image_4',
+        'deadline date_start_event date_end_event',
+      ).lean();
+
+      if (!event) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      if (userId) { // jika ditemukan user
+        const archieve_event = await ArchiveEvent.findOne({ user: userId, scholarship: event._id });
+        if (archieve_event) { // jika user sudah menyimpan arsip
+          event.is_saved = true;
+          event.is_login = true;
+          event.trigger_id = archieve_event._id;
+        } else { // jika user belum menyimpan arsip
+          event.is_saved = false;
+          event.is_login = true;
+          event.trigger_id = event._id;
+        }
+      } else { // jika tidak ditemukan user
+        event.is_saved = false;
+        event.is_login = false;
+        event.trigger_id = false;
+      }
+
+      res.status(200).json({ status: 200, message: 'Success Get One Event', result: event });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: error });
+    }
+  },
 
 };
