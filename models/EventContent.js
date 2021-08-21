@@ -54,11 +54,15 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  organizer_name: {
+  name_bank: {
     type: String,
     required: true,
   },
-  organizer_email: {
+  user_bank: {
+    type: String,
+    required: true,
+  },
+  no_rekening: {
     type: String,
     required: true,
   },
@@ -66,20 +70,65 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  imagesUrl: {
-    type: [String],
+  poster: {
+    type: String,
     required: true,
+  },
+  logo: {
+    type: String,
+    required: true,
+  },
+  image_1: {
+    type: String,
+    required: true,
+  },
+  image_2: {
+    type: String,
+    required: true,
+  },
+  image_3: {
+    type: String,
+    required: true,
+  },
+  image_4: {
+    type: String,
+    required: true,
+  },
+  cld_poster_id: {
+    type: String,
+    required: true,
+    sparse: true,
+  },
+  cld_logo_id: {
+    type: String,
+    required: true,
+    sparse: true,
+  },
+  cld_image_1_id: {
+    type: String,
+    required: true,
+    sparse: true,
+  },
+  cld_image_2_id: {
+    type: String,
+    required: true,
+    sparse: true,
+  },
+  cld_image_3_id: {
+    type: String,
+    required: true,
+    sparse: true,
+  },
+  cld_image_4_id: {
+    type: String,
+    required: true,
+    sparse: true,
   },
   slug: {
     type: String,
     slug: 'title',
-    unique: true,
+    sparse: true,
     slug_padding_size: 2,
-  },
-  cloudinary_id: {
-    type: [String],
-    unique: true,
-    required: true,
   },
 }, {
   timestamps: true,
