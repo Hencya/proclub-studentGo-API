@@ -30,11 +30,11 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  deadline: {
+  date_start_event: {
     type: Date,
     required: true,
   },
-  date_start_event: {
+  deadline: {
     type: Date,
     required: true,
   },
@@ -71,6 +71,10 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   no_hp: {
+    type: String,
+    required: true,
+  },
+  organizer_name: {
     type: String,
     required: true,
   },

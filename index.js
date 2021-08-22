@@ -7,6 +7,7 @@ const fs = require('fs');
 // routes
 const eventContentRoutes = require('./routes/event');
 const authRoutes = require('./routes/auth');
+const archivesEventRoutes = require('./routes/archivesEvent');
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ mongoose.connect(process.env.MONGO_URI, {
 }).catch((err) => console.log(err));
 
 // middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(`${__dirname}/public`));
 app.use('/uploads', express.static('uploads'));
@@ -39,3 +40,4 @@ if (!fs.existsSync('./uploads')) {
 
 app.use('/api/v1/users', authRoutes);
 app.use('/api/v1/events', eventContentRoutes);
+app.use('/api/v1/archives-events', archivesEventRoutes);

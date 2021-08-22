@@ -9,7 +9,6 @@ const fileFilter = (req, file, cb) => {
 };
 
 const storage = multer.diskStorage({
-  // destinasi di deklarasi jika tidak images akan tersimpan di C:/
   destination(req, file, cb) {
     cb(null, './uploads');
   },

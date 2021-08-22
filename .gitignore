@@ -1,8 +1,9 @@
 .env
 node_modules
 package-lock.json
-.gitognore
-contract_api
-.eslintrc.json
-.vscode
 uploads
+.gitignore
+contract_API
+.vscode
+.eslintrc.json
+

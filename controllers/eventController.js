@@ -39,16 +39,16 @@ module.exports = {
         numberOfTicket,
         registration_link,
         category,
-        description,
         deadline,
+        description,
         date_start_event,
         date_end_event,
         start_event,
         end_event,
         tags,
         price,
-        organizer_name,
         no_hp,
+        organizer_name,
         organizer_email,
         no_rekening,
         user_bank,
@@ -57,11 +57,12 @@ module.exports = {
       const newEventContent = new EventContent({
         user,
         title,
+        registration_link,
         broadcast_media,
         category,
-        description,
         deadline,
-        registration_link,
+        numberOfTicket,
+        description,
         date_start_event,
         date_end_event,
         start_event,
@@ -71,7 +72,6 @@ module.exports = {
         organizer_name,
         no_hp,
         organizer_email,
-        numberOfTicket,
         poster: newPoster.secure_url,
         logo: newLogo.secure_url,
         image_1: newImage1.secure_url,
@@ -84,19 +84,18 @@ module.exports = {
         cld_image_2_id: newImage2.public_id,
         cld_image_3_id: newImage3.public_id,
         cld_image_4_id: newImage4.public_id,
-        no_rekening,
         user_bank,
+        no_rekening,
         name_bank,
       });
 
-      // untuk nampung jika terjadi error (hapus images di cloudinary)
+      // untuk nampung jika terjadi error
       publicIdList.push(newPoster.public_id);
       publicIdList.push(newLogo.public_id);
       publicIdList.push(newImage1.public_id);
       publicIdList.push(newImage2.public_id);
       publicIdList.push(newImage3.public_id);
       publicIdList.push(newImage4.public_id);
-
       const savedEventContent = await newEventContent.save();
 
       res.status(201).json({
@@ -111,7 +110,7 @@ module.exports = {
           await cloudinary.uploader.destroy(publicIdList[i]);
         }
         publicIdList.splice(0, publicIdList.length);
-        return res.status(409).json({ message: 'Cloudinary Id must be unique' });
+        return res.status(409).json({ message: 'The same event has been uploaded' });
       }
       for (let i = 0; i < publicIdList.length; i++) {
         await cloudinary.uploader.destroy(publicIdList[i]);
@@ -124,7 +123,7 @@ module.exports = {
   getAllEventContentSkipFive: async (req, res) => {
     try {
       const events = await EventContent.find().select(
-        '_id title poster deadline description slug tags',
+        '_id title poster deadline description slug tags category',
       ).skip(5).sort({ createdAt: 'desc' });
 
       if (events.length < 1 && events !== null) {
@@ -147,7 +146,7 @@ module.exports = {
   getLatestEventContent: async (req, res) => {
     try {
       const events = await EventContent.find().select(
-        '_id title poster deadline description slug tags',
+        '_id title poster deadline description slug tags category',
       ).limit(5).sort({ createdAt: 'desc' });
 
       if (events.length < 1 && events !== null) {
@@ -281,5 +280,34 @@ module.exports = {
       res.status(500).json({ message: err });
     }
   },
+
+  getEventContentByTitleWithSearching: async (req, res) => {
+    try {
+      const { title } = req.query;
+      const events = await EventContent.find({ title: new RegExp(title, 'i') }).select(
+        '_id title poster deadline description slug tags',
+      );
+      if (events.length > 0) {
+        res.status(200).json({
+          status: 200,
+          message: 'Success Get Search Events',
+          result: events,
+        });
+      } else {
+        res.status(404).json({
+          status: 404,
+          message: 'Events Not Found',
+          result: events,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: error });
+    }
+  },
+
+  // createCheckoutEvent: async (req, res) => {
+
+  // },
 
 };
