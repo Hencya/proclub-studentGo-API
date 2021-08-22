@@ -1,0 +1,1138 @@
+STANDAR API 
+
+{Root.Api}/{version}/{grouping}/{endpoint}
+SAMPLE :
+http://studentGo.com/v1/auth/login
+
+Standar Status Response
+200 - OK                        --> Call API Success
+201 - CREATED                   --> Post Success
+400 - BAD REQUEST               --> Error on Client Side
+401 - UNAUTHORIZED              --> User not authorized to the REQUEST
+403 - FORBIDDEN                 --> User not allowed to access
+404 - NOT FOUND                 --> Request endpoint not found
+409 - CONFLICTS			--> Request conflicts 
+500 - INTERNAL SERVER ERROR     --> Error on server side
+502 - BAD GATEWAY               --> Invalid Response From Another Request
+
+GROUP: Authentication
+
+[1] - Register
+Method : POST
+URL : /api/v1/auth/register
+
+Body Request:
+{
+    "name": string required,
+    "password": string required,
+    "email": unique string required,
+    "status_pendidikan": string required,
+    "no_telepon": string required,
+}
+
+Body response: 
+{
+    "status":201
+    "message": "Register Success"
+    "data": {
+        "id": 1,
+	"avatar": "https://res.cloudinary.com/farahazzhr/image/upload/v1629178867/avatar/user_hold5q.png",
+    	"name": "Testing",
+   	"email": "testing@gmail.com",
+    	"status_pendidikan": "SMA,
+   	"no_telepon": "08187327896"
+    }
+}
+
+err-response:
+201 -> User berhasil dibuat
+400 -> input yang anda masukan tidak valid
+401 -> input yang anda masukan tidak valid (email/password salah satu atau keduanya tidak ada)
+409 -> Conflict data
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+[2] - Login
+Method : GET
+URL : /api/v1/auth/login
+
+Body Request:
+{
+    "password": string required,
+    "email": unique string required,
+}
+
+Body response: 
+{
+    "status": 200
+    "message": "Login Success"
+    "data": {
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMWJhOWI4ZjRmYTkyMjM0OGYyNjExM
+                  CIsImlhdCI6MTYyOTIwNTYyNCwiZXhwIjoxNjI5MjA2MjI0fQ.PgSxKiDtEAWc-GZeVZRfk7GSVwM2F
+                  l4FYnL5q68pmDU"
+    }
+}
+
+err-response:
+200 -> User berhasil masuk
+401 -> input yang anda masukan tidak valid (email/password salah satu atau keduanya tidak ada)
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+GROUP: User
+[1] - Get Profile
+Method : GET
+URL : /api/v1/users
+
+NOTE !!!!
+id user diambil dari token
+
+Body response: 
+{
+    "status": 200
+    "message": "Success"
+    "data": {
+	"avatar": "https://res.cloudinary.com/farahazzhr/image/upload/v1629178867/avatar/user_hold5q.png",
+    	"name": "Testing",
+   	"email": "testing@gmail.com",
+    	"status_pendidikan": "SMA,
+   	"no_telepon": "08187327896"
+    }
+}
+
+err-response:
+200 -> User berhasil melihat profile
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+[2] - Update Profile
+Method : POST
+URL : /api/v1/users/update
+
+Body Request:
+{
+    "avatar": "https://res.cloudinary.com/farahazzhr/image/upload/v1629178867/avatar/user_hold5q.png"
+    "name": "Update name",
+    "password": "Update password",
+    "status_pendidikan": "Update status",
+    "no_telepon": "update no_telepon",
+}
+
+Body response: 
+{
+    "status": 200
+    "message": "Success"
+    "data": {
+	"avatar": "https://res.cloudinary.com/farahazzhr/image/upload/v1629178867/avatar/user_hold5q.png",
+    	"name": "Testing",
+    	"status_pendidikan": "SMA,
+   	"no_telepon": "08187327896"
+    }
+}
+
+err-response:
+200 -> User berhasil melihat profile
+401 -> input yang anda masukan tidak valid (ada field yang kosong)
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+GROUP: Scholarship
+
+[1] - POST scholarship  
+Method : POST
+URL : /api/v1/scholarship
+Body Request:
+{
+    "title" : "String required",
+    "deadline" : "Date required", => YYYY-MM-DD
+    "requirement" : "String required",
+    "description" : "String required",
+    "contact_whatsapp" : "Number",
+    "contact_facebook" : "String",
+    "image_poster" : "Image required",
+    "registration_link" : "String required unique",
+    "educational_level" : "String required"
+}
+Body Response:
+{
+    "status": 201,
+    "message": "Success Create New Scholarship",
+    "result": {
+        "_id": "611a67aea6064024900e6215",
+        "user": "611547d86161fa057cb90052",
+        "title": "Beasiswa Prestasi Yolo.co.id 3.0",
+        "deadline": "2020-09-25T00:00:00.000Z",
+        "requirement": "Mahasiswa dengan IPK minimal 3.66",
+        "registration_link": "www.yolooo-company-3.com",
+        "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+        "description": "Membantu mahasiswa berprestasi tinggi dalam memenuhi kebutuhan perkuliahan",
+        "contact_whatsapp": "016256125652611",
+        "contact_facebook": "YoloCompany",
+        "educational_level": "KULIAH",
+        "cloudinary_id": "belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y",
+        "slug": "beasiswa-prestasi-yolo-co-id-3-0",
+        "__v": 0
+    }
+}
+err-response:
+201 -> User berhasil melihat scholarship  
+409 -> Conflict data
+500 -> Error on server side
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+[2] - API dapat membuat dan menyimpan beasiswa baru 
+Method : GET
+URL : /api/v1/scholarships/slider
+=> 10 data terbaru
+Contoh Response 2 data(=> ASLINYA 10 DATA): 
+{
+        "status" : "200"
+	"message": "Success Get Scholarships Slider",
+        "result" : [
+        {
+            "_id": "611a296c8166df25c410efac",
+            "title": "Beasiswa Bank BBC",
+            "deadline": "2021-09-23T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629104492/belajar_probation/bfd9a3e349a65ceeda9813e7dbc13c68_ilftpr.png",
+            "description": "Deskripsi beasiswa bank BBC",
+            "educational_level": "SMA",
+            "slug": "beasiswa-bank-bbc"
+        },
+        {
+            "_id": "611a666ba6064024900e6203",
+            "title": "Beasiswa Hafiz AL-QURAN S2 Luar Negeri",
+            "deadline": "2021-09-05T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120106/belajar_probation/e23d8ad2f029e31eb9cdda84265d0dcc_tomdim.png",
+            "description": "Beasiswa khusus hafiz untuk meningkatkan keilmuan dan melanjutkan pendidikan di S2 Luar Negeri",
+            "educational_level": "KULIAH",
+            "slug": "beasiswa-hafiz-al-quran-s2-luar-negeri"
+        },
+    ]
+    
+}
+err-response:
+200 -> User berhasil melihat scholarship  
+500 -> Error on server side
+
+
+[3] - API dapat melihat 5 beasiswa (unggulan/terbaru) => rizky sudah
+Method : GET
+URL : /api/v1/scholarship/5-latest
+=> 5 data terbaru
+Contoh Response 2 data(=> ASLINYA 5 DATA TERBARU):
+{
+    "status": 200,
+    "message": "Success Get 5 Latest Scholarships",
+    "result": [
+        {
+            "_id": "611a296c8166df25c410efac",
+            "title": "Beasiswa Bank BBC",
+            "deadline": "2021-09-23T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629104492/belajar_probation/bfd9a3e349a65ceeda9813e7dbc13c68_ilftpr.png",
+            "description": "Deskripsi beasiswa bank BBC",
+            "educational_level": "SMA",
+            "slug": "beasiswa-bank-bbc"
+        },
+        {
+            "_id": "611a666ba6064024900e6203",
+            "title": "Beasiswa Hafiz AL-QURAN S2 Luar Negeri",
+            "deadline": "2021-09-05T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120106/belajar_probation/e23d8ad2f029e31eb9cdda84265d0dcc_tomdim.png",
+            "description": "Beasiswa khusus hafiz untuk meningkatkan keilmuan dan melanjutkan pendidikan di S2 Luar Negeri",
+            "educational_level": "KULIAH",
+            "slug": "beasiswa-hafiz-al-quran-s2-luar-negeri"
+        }
+    ]
+}
+
+err-response:
+200 -> User berhasil melihat scholarship  
+500 -> Error on server side
+
+[4] - API dapat melihat SEMUA beasiswa SELAIN 5 beasiswa unggulan/terbaru (SEMUA BEASISWA)  
+Method : GET
+URL : /api/v1/scholarships
+=> Semua data selain 5 beasiswa unggulan/terbaru
+Contoh Response 2 data (ASLINYA ADA BANYAK DATA):
+{
+	"status": 200,
+        "message": "Success Get All Scholarships",
+	"result": [
+        {
+            "_id": "611a661fa6064024900e6200",
+            "title": "Beasiswa Hafiz AL-QURAN SMP",
+            "deadline": "2021-05-06T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120031/belajar_probation/237b78931a239a37f0494bbe4fc2a646_scys4i.png",
+            "description": "Beasiswa khusus hafiz untuk meningkatkan keilmuan dan melanjutkan pendidikan di SMA",
+            "educational_level": "SMP",
+            "slug": "beasiswa-hafiz-al-quran-smp"
+        },
+        {
+            "_id": "611a66f2a6064024900e6209",
+            "title": "Beasiswa Bantuan Terdampak Korona",
+            "deadline": "2021-04-21T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120242/belajar_probation/92f2f9a247f3728f92429e8a8a512a28_hdayyg.png",
+            "description": "Meringankan mahasiswa dengan penghasilan orang tua terdampak korona",
+            "educational_level": "KULIAH",
+            "slug": "beasiswa-bantuan-terdampak-korona"
+        }
+    ]
+}
+
+err-response:
+200 -> User berhasil melihat scholarships
+500 -> Error on server side
+
+
+[5] - API dapat melihat dan menampilkan beasiswa yang dicari berdasarkan title 
+Method : GET
+URL : /api/v1/scholarships/search?title=Non-Akademik
+req.query.title
+query == title
+=> Semua data beasiswa yang memiliki title bersesuaian
+Contoh Response Jika Data Ditemukan:
+{
+    "status": 200,
+    "message": "Success Get Search Scholarships",
+    "result": [
+        {
+            "_id": "611a6722a6064024900e620c",
+            "title": "Beasiswa Prestasi Non-akademik",
+            "deadline": "2021-07-10T00:00:00.000Z",
+            "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120289/belajar_probation/54c3c5fba474d05e3f206bb5fae6b9b4_ymqahy.png",
+            "description": "Menampung dan meningkatkan minat bakat mahasiswa di bidang non-akademik",
+            "educational_level": "KULIAH",
+            "slug": "beasiswa-prestasi-non-akademik"
+        }
+    ]
+}
+Contoh Response Jika Data Tidak Ditemukan:
+{
+    "status": 404,
+    "message": "Scholarship Not Found",
+    "result": []
+}
+err-response:
+200 -> User berhasil melihat Scholarship
+404 -> beasiswa tak ada
+500 -> Error on server side
+
+
+[6] - API dapat melihat beasiswa terkait menggunakan slug (bySlug)
+Method : GET
+URL : /api/v1/scholarships/{slug}
+Contoh Response:
+{
+    "status": 200,
+    "message": "Success Get One Scholarship",
+    "result": {
+        "_id": "611a296c8166df25c410efac",
+        "deadline": "2021-09-23T00:00:00.000Z",
+        "requirement": "Syarat Beasiswa Bank BBC",
+        "registration_link": "www.bbc.com",
+        "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629104492/belajar_probation/bfd9a3e349a65ceeda9813e7dbc13c68_ilftpr.png",
+        "description": "Deskripsi beasiswa bank BBC",
+        "contact_whatsapp": "183721837273",
+        "contact_facebook": "bbc facebook",
+        "educational_level": "SMA",
+        "slug": "beasiswa-bank-bbc",
+        "is_saved": true,  => jika true maka munculkan button method DELETE yang hit endpoint /api/v1/archives-scholarship/{trigger_id} DAN jika false maka munculkan button method POST yang hit endpoint /api/v1/archives-scholarship
+        "is_login": true,  => jika true maka USER sudah LOGIN DAN jika false maka USER BELUM LOGIN (terserah kalian mau buat kondisinya gimana => intinya button nya gabisa save atau delete => karena akunnya belom ada) => jika false maka trigger_id == false
+        "trigger_id": "611a388b14ef63208487b730"  => trigger_id adalah id yang ditaruh di button nantinya => jika button adalah POST maka taruh trigger_id di input hidden agar bisa di req.body.trigger_id  DAN jika button adalah DELETE maka taruh trigger_id di params yang hit endpoint delete => /api/v1/archives-scholarship/{trigger_id}
+    }
+}
+err-response:
+200 -> User berhasil melihat Scholarship
+500 -> Error on server side
+
+
+NOTE!!!!
+ARCHIVE DISINI ADALAH => SIMPAN BACA NANTI BEASISWA 
+[7] - Post Scholarship Archive (membuat data baru simpan baca nanti beasiswa dari suatu users) 
+Method : POST
+URL : /api/v1/archives-scholarship
+Body Request:
+{
+    "trigger_id" : "string", => taruh trigger_id di sebuah input hidden (agar tidak terlihat oleh users)
+}
+Response:
+{
+    "status": 201,
+    "message": "Success Post Scholarship Archive",
+    "result": {
+        "_id": "611b2e12632f57475451cc19",
+        "user": "611547c76161fa057cb9004c",
+        "scholarship": "611a5daba6064024900e61c4",
+        "__v": 0
+    }
+}
+err-response:
+200 -> User berhasil update Scholarship
+500 -> Error on server side
+
+
+[8] - Delete Scholarship Archive (menghapus data simpan baca nanti beasiswa dari suatu users) 
+Method : DELETE
+URL : /api/v1/archives-scholarship/{trigger_id}
+Response:
+{
+    "status": 200,
+    "message": "Success Delete Archive",
+    "result": true
+}
+Error Response: {
+    "status": 404,
+    "message": "Archive tidak ditemukan",
+    "result": false
+}
+err-response:
+200 -> User berhasil menghapus scholarship Archive 
+500 -> Error on server side
+
+
+[9] - Get Scholarship Archives (mendapatkan data simpan baca nanti beasiswa yang dimiliki oleh suatu users) 
+Method : GET
+URL : /api/v1/archives-scholarship
+Contoh Response Get Scholarship Archives(simpan baca nanti beasiswa) dari suatu users:
+{
+    "status": 200,
+    "message": "Success Get All Archive",
+    "result": [
+        {
+            "_id": "611b2e12632f57475451cc19",
+            "user": "611547c76161fa057cb9004c",
+            "scholarship": {
+                "_id": "611a5daba6064024900e61c4",
+                "user": "6115479e6161fa057cb90040",
+                "title": "Beasiswa BTPP by Dedik",
+                "deadline": "2020-11-12T00:00:00.000Z",
+                "requirement": "Harus mempunyai dedik member 2.0 dan Bank BTPP",
+                "registration_link": "www.dedikloan-btpp.com",
+                "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629117866/belajar_probation/2b757d663ea6b2a5f49b126beedfe09c_sievvk.png",
+                "description": "Ini adalah beasiswa kolaborasi dedik dan BTPP",
+                "contact_whatsapp": "0815261255612",
+                "contact_facebook": "dedikdedikBTPP",
+                "educational_level": "SMP",
+                "cloudinary_id": "belajar_probation/2b757d663ea6b2a5f49b126beedfe09c_sievvk",
+                "slug": "beasiswa-btpp-by-dedik"
+            }
+        },
+        {
+            "_id": "611b3205ab9fb70d90befac5",
+            "user": "611547c76161fa057cb9004c",
+            "scholarship": {
+                "_id": "611a640aa6064024900e61e8",
+                "user": "611547bb6161fa057cb90048",
+                "title": "Beasiswa Kampus with Deta Company Pro Max",
+                "deadline": "2020-11-09T00:00:00.000Z",
+                "requirement": "Ayo ikuti beasiswa Deta Company untuk meringankan pembayaran ",
+                "registration_link": "www.beasiswadetapromax.com",
+                "poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629119498/belajar_probation/23b36aa21098e17cb06a88fc34dc1d0a_do0tbj.png",
+                "description": "Ayo ikuti beasiswa Deta Company untuk meringankan pembayaran",
+                "contact_whatsapp": "07162716212",
+                "contact_facebook": "deta company",
+                "educational_level": "KULIAH",
+                "cloudinary_id": "belajar_probation/23b36aa21098e17cb06a88fc34dc1d0a_do0tbj",
+                "slug": "beasiswa-kampus-with-deta-company-pro-max"
+            }
+        }
+    ]
+}
+err-response:
+200 -> User berhasil menghapus scholarship Archive 
+500 -> Error on server side
+
+GROUP: Acara
+
+[1] - POST Event
+Method : POST
+URL : /api/v1/event
+Body Request:
+{
+    "title" : "String required",
+    "poster": "Image required",
+    "broadcast_media" : "string required", 
+    "Category" : "String required",
+    "description" : "String required",
+    "image_1: "String required ",
+    "image_2": "String required ",
+    "image_3": "String required ",
+    "image_4": "String required ",
+    "date_start_event" : "Date required",
+    "date_end_event"  : "Date required",
+    "start_event" : "String required",
+    "end_event" : "String  required",
+    "logo": "Image required",
+    "tags": "String required,
+    "price": "number required",
+    "organizer_name": "String required",
+    "no_hp": "String required",
+    "organizer_email: "String required",
+    "name_bank": "String required",
+    "no_rekening": "String required",
+    "user_bank": "String required",  
+}
+
+Body Response:
+{
+    "status": 201,
+    "message": "Success Create New a Cotent Event",
+    "result": {
+        "_id": "6121f67525235e46d8a8b50c",
+        "user": "61214dbde97f897c60725242",
+        "title": "Dummy 9",
+        "broadcast_media": "Discord",
+        "category": "Bisnis",
+        "description": "Ini adalah sebuh acara dummy 1",
+        "deadline": "2020-08-09T17:00:00.000Z",
+        "date_start_event": "2020-09-09T17:00:00.000Z",
+        "date_end_event": "2020-12-09T17:00:00.000Z",
+        "start_event": "13.00 ",
+        "end_event": "15.00 ",
+        "tags": "free",
+        "price": 0,
+        "no_hp": "0899998989898",
+        "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615716/image_StudentGo/zrhwthgtw2uvbbro3q05.jpg",
+        "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615719/image_StudentGo/p6t8orv3f8fbvgpurnbz.jpg",
+        "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615718/image_StudentGo/wphnbbjkl1oza7hhr2lv.jpg",
+        "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615732/image_StudentGo/mrzrn8lwxrisqvoetcfp.jpg",
+        "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615733/image_StudentGo/jimf3e1pwmxnoastcnkf.jpg",
+        "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615734/image_StudentGo/kthkcz3gokml2mokc9my.jpg",
+        "cld_poster_id": "image_StudentGo/zrhwthgtw2uvbbro3q05",
+        "cld_logo_id": "image_StudentGo/p6t8orv3f8fbvgpurnbz",
+        "cld_image_1_id": "image_StudentGo/wphnbbjkl1oza7hhr2lv",
+        "cld_image_2_id": "image_StudentGo/mrzrn8lwxrisqvoetcfp",
+        "cld_image_3_id": "image_StudentGo/jimf3e1pwmxnoastcnkf",
+        "cld_image_4_id": "image_StudentGo/kthkcz3gokml2mokc9my",
+        "no_rekening": "12321313127361",
+        "user_bank": "Faiz Rofi Hencya",
+        "name_bank": "Mandiri",
+        "createdAt": "2021-08-22T07:02:13.487Z",
+        "updatedAt": "2021-08-22T07:02:13.487Z",
+        "slug": "dummy-9",
+        "__v": 0
+    }
+}
+err-response:
+201 -> User berhasil melihat scholarship  
+422 -> User didnt upload file
+500 -> Error on server side
+
+
+[2] - GET Event GET all Event (dapat melihat semua acara selain 5 unggulan/terbaru)
+Method : POST
+URL : /api/v1/events
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get All Events",
+    "result": [
+        {
+            "_id": "6121f63125235e46d8a8b502",
+            "title": "Dummy 4",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615658/image_StudentGo/y0oplm9ru1ntelenwvhu.jpg",
+            "slug": "dummy-4"
+        },
+        {
+            "_id": "6121f62025235e46d8a8b500",
+            "title": "Dummy 3",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615641/image_StudentGo/dlstn8oijcfoywvu13me.jpg",
+            "slug": "dummy-3"
+        },
+        {
+            "_id": "6121f61025235e46d8a8b4fe",
+            "title": "Dummy 2",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615626/image_StudentGo/cxvf5x6utyr6oybweslh.jpg",
+            "slug": "dummy-2"
+        },
+        {
+            "_id": "6121f5f825235e46d8a8b4fc",
+            "title": "Dummy 1",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615602/image_StudentGo/uvvtt4fnvusepcidtnpk.jpg",
+            "slug": "dummy-1"
+        }
+    ]
+}
+
+err-response:
+200 -> User berhasil melihat event
+404 -> Events doesnt exist
+500 -> Error on server side
+
+[3] - GET all Event (dapat melihat semua acara selain 5 unggulan/terbaru)
+Method : POST
+URL : /api/v1/events/5-latest
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get 5 Latest Events",
+    "result": [
+        {
+            "_id": "6121f67525235e46d8a8b50c",
+            "title": "Dummy 9",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615716/image_StudentGo/zrhwthgtw2uvbbro3q05.jpg",
+            "slug": "dummy-9"
+        },
+        {
+            "_id": "6121f66025235e46d8a8b50a",
+            "title": "Dummy 8",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615706/image_StudentGo/iw6daif7muwijslks4jh.jpg",
+            "slug": "dummy-8"
+        },
+        {
+            "_id": "6121f65625235e46d8a8b508",
+            "title": "Dummy 7",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615696/image_StudentGo/xwsjn3kcsjlkh9lljyh7.jpg",
+            "slug": "dummy-7"
+        },
+        {
+            "_id": "6121f64725235e46d8a8b506",
+            "title": "Dummy 6",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615680/image_StudentGo/zv4k991vi3tnq48f6lp7.jpg",
+            "slug": "dummy-6"
+        },
+        {
+            "_id": "6121f63b25235e46d8a8b504",
+            "title": "Dummy 5",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "tags": "free",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615669/image_StudentGo/lbqmoqdz1n0bbcwowerv.jpg",
+            "slug": "dummy-5"
+        }
+    ]
+}
+
+err-response:
+200 -> User berhasil melihat semua event
+404 -> Events doesnt exist
+500 -> Error on server side
+
+[4] - GET event by slug (ketika nge klik poster acara)
+Method : POST
+URL : /api/v1/event/{tags}
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get One Event",
+    "result": {
+        "_id": "6121f67525235e46d8a8b50c",
+        "user": "61214dbde97f897c60725242",
+        "title": "Dummy 9",
+        "broadcast_media": "Discord",
+        "category": "bisnis",
+        "description": "Ini adalah sebuh acara dummy 1",
+        "deadline": "2020-08-09T17:00:00.000Z",
+        "date_start_event": "2020-09-09T17:00:00.000Z",
+        "date_end_event": "2020-12-09T17:00:00.000Z",
+        "start_event": "13.00 ",
+        "end_event": "15.00 ",
+        "tags": "free",
+        "price": 0,
+        "no_hp": "0899998989898",
+        "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615716/image_StudentGo/zrhwthgtw2uvbbro3q05.jpg",
+        "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615719/image_StudentGo/p6t8orv3f8fbvgpurnbz.jpg",
+        "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615718/image_StudentGo/wphnbbjkl1oza7hhr2lv.jpg",
+        "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615732/image_StudentGo/mrzrn8lwxrisqvoetcfp.jpg",
+        "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615733/image_StudentGo/jimf3e1pwmxnoastcnkf.jpg",
+        "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615734/image_StudentGo/kthkcz3gokml2mokc9my.jpg",
+        "slug": "dummy-9",
+        "is_saved": false,
+        "is_login": true,
+        "trigger_id": "6121f67525235e46d8a8b50c"
+    }
+}
+
+err-response:
+200 -> User berhasil melihat semua event
+404 -> Events doesnt exist
+500 -> Error on server side
+
+[5] - GET event by tags (ketika nge klik nav bar gratis berbayar terbatas)
+Method : POST
+URL : /api/v1/event/{tags}
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get All Events by Tags",
+    "result": [
+        {
+            "_id": "6121f5f825235e46d8a8b4fc",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 1",
+            "broadcast_media": "Zoom",
+            "category": "Teknologi",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615602/image_StudentGo/uvvtt4fnvusepcidtnpk.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615605/image_StudentGo/gc7izjyhcjixcsdieuvr.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615603/image_StudentGo/fmzihwf0vqgug1ph61xe.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615606/image_StudentGo/wbzhfc50s4x9xvhf1baz.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615608/image_StudentGo/vgzja8dwhmc77vvut3cy.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615609/image_StudentGo/svggxzgeuqgowhwyedqd.jpg",
+            "slug": "dummy-1"
+        },
+        {
+            "_id": "6121f61025235e46d8a8b4fe",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 2",
+            "broadcast_media": "Gmmet",
+            "category": "Teknologi",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615626/image_StudentGo/cxvf5x6utyr6oybweslh.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615629/image_StudentGo/wjmublznksb7y8s50tkz.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615628/image_StudentGo/iwlroyiivgppc7b1jg29.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615630/image_StudentGo/ay6t7nycnj8tx1c7inlo.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615632/image_StudentGo/oehm4bjthmy0unpxhmte.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615634/image_StudentGo/ij55yhgjeypewa55zf7h.jpg",
+            "slug": "dummy-2"
+        },
+        {
+            "_id": "6121f62025235e46d8a8b500",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 3",
+            "broadcast_media": "Discord",
+            "category": "Teknologi",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615641/image_StudentGo/dlstn8oijcfoywvu13me.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615644/image_StudentGo/iodwqug2swljcj3zxljn.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615643/image_StudentGo/matgnb3vmiq9gy8neddu.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615646/image_StudentGo/nikj4vhcok2ptccmtbvq.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615647/image_StudentGo/bd1xrrouckuklcxryvlg.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615649/image_StudentGo/tamofgf4uunaoeqxsytj.jpg",
+            "slug": "dummy-3"
+        },
+        {
+            "_id": "6121f63125235e46d8a8b502",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 4",
+            "broadcast_media": "Zoom",
+            "category": "Teknologi",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615658/image_StudentGo/y0oplm9ru1ntelenwvhu.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615662/image_StudentGo/pfxtrawyfvlwtkzirjeg.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615660/image_StudentGo/hew46hyzmboanrr2uu8u.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615663/image_StudentGo/yljztt9mixeemkwjjyed.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615665/image_StudentGo/b9hk7zbbtpw3egmcchyw.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615666/image_StudentGo/ptfafgciuxhmavtcqxef.jpg",
+            "slug": "dummy-4"
+        },
+        {
+            "_id": "6121f63b25235e46d8a8b504",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 5",
+            "broadcast_media": "Zoom",
+            "category": "Teknologi",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615669/image_StudentGo/lbqmoqdz1n0bbcwowerv.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615672/image_StudentGo/uyk1we6sxmaeyxmcg1sp.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615671/image_StudentGo/igsyr7ofkigqzftlfhsw.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615674/image_StudentGo/lchvvk13p26yfi9l2o8z.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615675/image_StudentGo/dcwkuhjyfwjudn1rqlcw.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615676/image_StudentGo/o16yqrl9lugomahfpths.jpg",
+            "slug": "dummy-5"
+        },
+        {
+            "_id": "6121f64725235e46d8a8b506",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 6",
+            "broadcast_media": "Zoom",
+            "category": "Seni",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615680/image_StudentGo/zv4k991vi3tnq48f6lp7.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615683/image_StudentGo/fqvjq3xse0fqrfdeaqgk.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615681/image_StudentGo/wbfrtpz9jd2jyuh31oce.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615685/image_StudentGo/myrsek0m0ct97rzhpbwv.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615686/image_StudentGo/ojjsnc3ouhtf6tnyo724.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615688/image_StudentGo/tueknjymotv6avc7alah.jpg",
+            "slug": "dummy-6"
+        },
+        {
+            "_id": "6121f65625235e46d8a8b508",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 7",
+            "broadcast_media": "Meet",
+            "category": "Seni",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615696/image_StudentGo/xwsjn3kcsjlkh9lljyh7.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615699/image_StudentGo/jkolgnrpw1vtjatdqtya.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615698/image_StudentGo/tjo8vqx6jqznwsqa786p.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615700/image_StudentGo/kfcjurcqrpphqmvgoa7j.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615702/image_StudentGo/a7ba5y0vpy4gqhbhxhlt.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615703/image_StudentGo/ym9chu7nfveh33vwyvmc.jpg",
+            "slug": "dummy-7"
+        },
+        {
+            "_id": "6121f66025235e46d8a8b50a",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 8",
+            "broadcast_media": "Discord",
+            "category": "Seni",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615706/image_StudentGo/iw6daif7muwijslks4jh.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615708/image_StudentGo/bmgugvev6hyb617qdnd8.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615707/image_StudentGo/vevaglyareuc84xiblak.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615711/image_StudentGo/mubvglsuk0giqdfws3yf.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615712/image_StudentGo/unqjkxmktkyoeeye9xxx.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615713/image_StudentGo/xg8lbsnr9yeoeuypesdk.jpg",
+            "slug": "dummy-8"
+        },
+        {
+            "_id": "6121f67525235e46d8a8b50c",
+            "user": "61214dbde97f897c60725242",
+            "title": "Dummy 9",
+            "broadcast_media": "Discord",
+            "category": "Bisnis",
+            "description": "Ini adalah sebuh acara dummy 1",
+            "deadline": "2020-08-09T17:00:00.000Z",
+            "date_start_event": "2020-09-09T17:00:00.000Z",
+            "date_end_event": "2020-12-09T17:00:00.000Z",
+            "start_event": "13.00 ",
+            "end_event": "15.00 ",
+            "tags": "free",
+            "price": 0,
+            "no_hp": "0899998989898",
+            "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615716/image_StudentGo/zrhwthgtw2uvbbro3q05.jpg",
+            "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615719/image_StudentGo/p6t8orv3f8fbvgpurnbz.jpg",
+            "image_1": "https://res.cloudinary.com/hencya/image/upload/v1629615718/image_StudentGo/wphnbbjkl1oza7hhr2lv.jpg",
+            "image_2": "https://res.cloudinary.com/hencya/image/upload/v1629615732/image_StudentGo/mrzrn8lwxrisqvoetcfp.jpg",
+            "image_3": "https://res.cloudinary.com/hencya/image/upload/v1629615733/image_StudentGo/jimf3e1pwmxnoastcnkf.jpg",
+            "image_4": "https://res.cloudinary.com/hencya/image/upload/v1629615734/image_StudentGo/kthkcz3gokml2mokc9my.jpg",
+            "slug": "dummy-9"
+        }
+    ]
+}
+
+err-response:
+200 -> User berhasil melihat semua event
+404 -> Events doesnt exist
+500 -> Error on server side
+
+[6] - GET event by slug (ketika di halaman konfirmasi)
+Method : POST
+URL : /api/v1/event/{tags}/{userId}
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get One Event for Payment",
+    "result": {
+        "_id": "6121f5f825235e46d8a8b4fc",
+        "user": "61214dbde97f897c60725242",
+        "title": "Dummy 1",
+        "broadcast_media": "Zoom",
+        "deadline": "2020-08-09T17:00:00.000Z",
+        "date_start_event": "2020-09-09T17:00:00.000Z",
+        "date_end_event": "2020-12-09T17:00:00.000Z",
+        "start_event": "13.00 ",
+        "end_event": "15.00 ",
+        "price": 0,
+        "no_hp": "0899998989898",
+        "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615602/image_StudentGo/uvvtt4fnvusepcidtnpk.jpg",
+        "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615605/image_StudentGo/gc7izjyhcjixcsdieuvr.jpg",
+        "slug": "dummy-1"
+    }
+}
+
+[7] - GET event by title (Ini saat di searching)
+Method : POST
+URL : /api/v1/event/search?title=dummy-1
+req.query.title
+query == title
+=> Semua data beasiswa yang memiliki title bersesuaian
+Contoh Response Jika Data Ditemukan:
+Body Response:
+{
+    "status": 200,
+    "message": "Success Get One Event for Payment",
+    "result": {
+        "_id": "6121f5f825235e46d8a8b4fc",
+        "user": "61214dbde97f897c60725242",
+        "title": "Dummy 1",
+        "broadcast_media": "Zoom",
+        "deadline": "2020-08-09T17:00:00.000Z",
+        "date_start_event": "2020-09-09T17:00:00.000Z",
+        "date_end_event": "2020-12-09T17:00:00.000Z",
+        "start_event": "13.00 ",
+        "end_event": "15.00 ",
+        "price": 0,
+        "no_hp": "0899998989898",
+        "poster": "https://res.cloudinary.com/hencya/image/upload/v1629615602/image_StudentGo/uvvtt4fnvusepcidtnpk.jpg",
+        "logo": "https://res.cloudinary.com/hencya/image/upload/v1629615605/image_StudentGo/gc7izjyhcjixcsdieuvr.jpg",
+        "slug": "dummy-1"
+    }
+}
+
+err-response:
+200 -> User berhasil melihat semua event
+404 -> Events doesnt exist
+500 -> Error on server side
+
+NOTE!!!!
+ARCHIVE DISINI ADALAH => SIMPAN BACA NANTI ACARA 
+[4] - Post Event Archive (membuat data baru simpan baca nanti untuk event dari suatu users) 
+Method : POST
+URL : /api/v1/archives-event
+Body Request:
+{
+    "trigger_id" : "string", => taruh trigger_id di sebuah input hidden (agar tidak terlihat oleh users)
+}
+Response:
+{
+    "status": 201,
+    "message": "Success Post Scholarship Archive",
+    "result": {
+        "_id": "611b2e12632f57475451cc19",
+        "user": "611547c76161fa057cb9004c",
+        "scholarship": "611a5daba6064024900e61c4",
+        "__v": 0
+    }
+}
+err-response:
+200 -> User berhasil update Scholarship
+500 -> Error on server side
+
+
+err-response:
+200 -> User berhasil melihat event by id  
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+
+[4] - GET event by title (ketika search)
+Method : POST
+URL : /api/v1/event/{title}
+Body Response:
+{
+    "status": 200,
+    "message": "Success GET  Event",
+    "result": {
+        "_id": "611a67aea6064024900e6215",
+    	"poster": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+    	"broadcast_media" : "zoom", 
+    	"Category" : "Teknologi",
+    	"description" : "event berguna",
+    	"image_1: "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+    	"image_2": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png ",
+    	"image_3": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+   	     "image_4": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+    	"date_start_event" : "01-11-2021",
+    	"date_start_event"  : "03-11-2021",
+    	 "start_event" : "09.30",
+    	"end_event" : "11.00",
+    	"logo": "https://res.cloudinary.com/dxz1qntcm/image/upload/v1629120429/belajar_probation/57fbb73d6b9f8dbb195acb8d5d47cd9e_gelp9y.png",
+    	"tags": "Berbayar",
+    	"price": 10000,
+   	     "organizer_name": "Buka Sitik Jos",
+    	"no_hp": "082342348236",
+    	"organizer_email: "abcd@gmail.com",
+	    "slug": "event-prestasi-yolo-co-id-3-0",
+        "__v": 0
+    }
+}
+
+err-response:
+200 -> User berhasil melihat event by id  
+500 -> Error on server side
+
+Error Response:
+{
+    "message": "Registration link already exists (must be unique)"
+}
+
+
+3.2 API dapat melihat home (poster pelatihan)
+Method : GET
+URL : /api/v1/home/poster
+3 data terbaru
+Body Request:
+{
+	
+	
+    	
+}
+
+3.3 API dapat melihat home (acara)
+Method : GET
+URL : /api/v1/home/event
+10 data terbaru
+Body Request:
+{
+	
+	
+    	
+}
+
+
+6.1 API dapat melihat training (Favorit)
+Method : GET
+URL : /api/v1/training/fav 
+6 data terbaru
+Body Request:
+{
+
+	
+    
+}
+
+6.2 API dapat melihat training (poster pelatihan)
+Method : GET
+URL : /api/v1/training/poster
+3 data terbaru
+Body Request:
+{
+	
+	
+    	
+}
+
+6.3 API dapat melihat training (all)
+Method : GET
+URL : /api/v1/training/all 
+10 data terbaru
+Body Request:
+{
+	
+	
+    	
+}
+
+7.1 API dapat melihat event (Favorit)
+Method : GET
+URL : /api/v1/event/new
+5 data terbaru
+Body Request:
+{
+
+	
+    
+}
+
+7.2 API dapat melihat event (poster pelatihan)
+Method : GET
+URL : /api/v1/event/all
+Body Request:
+{
+	
+	
+    	
+}
+
+8 API dapat melihat event (poster pelatihan)
+Method : GET
+URL : /api/v1/event/all
+Body Request:
+{
+	
+	
+    	
+}
