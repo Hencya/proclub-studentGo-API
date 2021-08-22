@@ -15,8 +15,9 @@ router.post('/', upload.fields([
 ]), eventController.createEventContent);
 router.get('/', eventController.getAllEventContentSkipFive);
 router.get('/5-latest', eventController.getLatestEventContent);
-router.get('/:{tags}/:{userId}', eventController.getEventContentBySlug);
-// router.get('/:slug/:userId', eventController.geteventBySlug);
-// router.get('/5-latest', eventController.getFiveLastestEvent);
+router.get('/:slug/:userId', eventController.getEventContentBySlug);
+router.get('/:tags', eventController.getEventContentByTags);
+router.get('/confirm/:slug', eventController.getEventContentBySlugConfirm);
+router.get('/search', eventController.getEventContentByTitle);
 
 module.exports = router;

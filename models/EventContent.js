@@ -128,6 +128,15 @@ const eventSchema = new mongoose.Schema({
     required: true,
     sparse: true,
   },
+  registration_link: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  numberOfTicket: {
+    type: Number,
+    required: true,
+  },
   slug: {
     type: String,
     slug: 'title',

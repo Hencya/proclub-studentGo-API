@@ -36,6 +36,8 @@ module.exports = {
         user,
         title,
         broadcast_media,
+        numberOfTicket,
+        registration_link,
         category,
         description,
         deadline,
@@ -59,6 +61,7 @@ module.exports = {
         category,
         description,
         deadline,
+        registration_link,
         date_start_event,
         date_end_event,
         start_event,
@@ -68,6 +71,7 @@ module.exports = {
         organizer_name,
         no_hp,
         organizer_email,
+        numberOfTicket,
         poster: newPoster.secure_url,
         logo: newLogo.secure_url,
         image_1: newImage1.secure_url,
@@ -123,7 +127,7 @@ module.exports = {
         '_id title poster deadline description slug tags',
       ).skip(5).sort({ createdAt: 'desc' });
 
-      if (!events) {
+      if (events.length < 1 && events !== null) {
         const error = new Error('Event Doesnt Exist');
         error.errorStatus = 404;
         throw error;
@@ -146,7 +150,7 @@ module.exports = {
         '_id title poster deadline description slug tags',
       ).limit(5).sort({ createdAt: 'desc' });
 
-      if (!events) {
+      if (events.length < 1 && events !== null) {
         const error = new Error('Event Doesnt Exist');
         error.errorStatus = 404;
         throw error;
@@ -170,13 +174,10 @@ module.exports = {
       const { userId } = req.params;
 
       const event = await EventContent.findOne({ slug }).select(
-        '_id slug poster logo user title broadcast_media category description',
-        'start_event end_event tags price organizer_name no_hp ',
-        'organizer_email poster logo image_1 image_2 image_3 image_4',
-        'deadline date_start_event date_end_event',
+        ' _id slug poster logo user title broadcast_media category description start_event end_event image_1 image_2 image_3 image_4 deadline date_start_event date_end_event registration_link numberOfTicket',
       ).lean();
 
-      if (!event) {
+      if (event !== null && event.length < 1) {
         const error = new Error('Event Doesnt Exist');
         error.errorStatus = 404;
         throw error;
@@ -197,12 +198,87 @@ module.exports = {
         event.is_saved = false;
         event.is_login = false;
         event.trigger_id = false;
+
+        const error = new Error('User Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
       }
 
-      res.status(200).json({ status: 200, message: 'Success Get One Event', result: event });
+      res.status(200).json({ status: 200, message: 'Success Get One Event by slug', result: event });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: error });
+    }
+  },
+
+  // ini untuk di button semua gratis berbayar
+  getEventContentByTags: async (req, res) => {
+    try {
+      const { tags } = req.params;
+      const events = await EventContent.find({ tags }).select(
+        '_id title poster deadline description slug tags',
+      );
+
+      if (events !== null && events.length < 1) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'Success Get All Events by Tags',
+        result: events,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  },
+
+  getEventContentBySlugConfirm: async (req, res) => {
+    try {
+      const { slug } = req.params;
+
+      const event = await EventContent.findOne({ slug }).select(
+        ' _id slug poster logo user title broadcast_media start_event end_event price organizer_name no_hp organizer_email deadline date_start_event date_end_event registration_link numberOfTicket',
+      );
+
+      if (event.length < 1 && event !== null) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      res.status(200).json({ status: 200, message: 'Success Get One Event for Payment', result: event });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: error });
+    }
+  },
+
+  getEventContentByTitle: async (req, res) => {
+    try {
+      const { title } = req.query;
+      const events = await EventContent.find({ title: new RegExp(title, 'i') }).select(
+        '_id title poster deadline description slug tags',
+      );
+      if (events.length > 0) {
+        res.status(200).json({
+          status: 200,
+          message: 'Success Get Search Events',
+          result: events,
+        });
+      } else {
+        res.status(404).json({
+          status: 404,
+          message: 'Event Not Found',
+          result: events,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
     }
   },
 
