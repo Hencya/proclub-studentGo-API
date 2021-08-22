@@ -13,9 +13,6 @@ router.post('/', upload.fields([
   { name: 'image4', maxCount: 100 },
   { name: 'logo', maxCount: 100 },
 ]), eventController.createEventContent);
-router.get('/', eventController.getAllEventContentSkipFive);
-router.get('/5-latest', eventController.getLatestEventContent);
-router.get('/:{tags}/:{userId}', eventController.getEventContentBySlug);
 // router.get('/:slug/:userId', eventController.geteventBySlug);
 // router.get('/5-latest', eventController.getFiveLastestEvent);
 
