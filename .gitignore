@@ -2,7 +2,7 @@
 node_modules
 package-lock.json
 .gitognore
-contract_API
+contract_api
 .eslintrc.json
 .vscode
 uploads
