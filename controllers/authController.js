@@ -66,7 +66,7 @@ exports.profile = async (req, res, next) => {
 exports.update = async (req, res) => {
   const { user } = req;
   try {
-    if (user.cloudinary_id != 'avatar/1629700275523_user_rqgafp') {
+    if (user.cloudinary_id != 'student-go/avatar/1629738939627_user_idggt1') {
       await cloudinary.uploader.destroy(user.cloudinary_id);
     }
     var result;

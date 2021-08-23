@@ -33,11 +33,11 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: 'https://res.cloudinary.com/hencya/image/upload/v1629700278/avatar/1629700275523_user_rqgafp.png',
+    default: 'https://res.cloudinary.com/hencya/image/upload/v1629738941/student-go/avatar/1629738939627_user_idggt1.png',
   },
   cloudinary_id: {
     type: String,
-    default: 'avatar/1629700275523_user_rqgafp',
+    default: 'student-go/avatar/1629738939627_user_idggt1',
   },
 });
 

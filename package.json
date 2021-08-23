@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "nodemon index.js"
+    "start": "set NODE_ENV=development&& node index.js",
+    "start-prod": "set NODE_ENV=production&& node index.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,9 @@
     "mongoose-double": "0.0.1",
     "mongoose-slug-generator": "^1.0.4",
     "multer": "^1.4.3"
+  },
+  "engines": {
+    "node": "14.15.5"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
