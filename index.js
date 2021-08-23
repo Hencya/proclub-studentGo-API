@@ -56,6 +56,6 @@ app.use('/api/v1/archives-scholarship', archivesScholarshipRoutes);
 // course
 app.use('/api/v1/courses', courseRoutes);
 
-app.listen(process.env.PORT_DEV || process.env.PORT_PROD, () => {
-  console.log(`Server bejalan di http://${process.env.HOST_DEV}:${process.env.PORT_DEV}`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log('Server is running');
 });
