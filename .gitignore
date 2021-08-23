@@ -1,9 +1,0 @@
-.env
-node_modules
-package-lock.json
-uploads
-.gitignore
-contract_API
-.vscode
-.eslintrc.json
-
