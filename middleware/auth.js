@@ -26,3 +26,26 @@ exports.protect = async (req, res, next) => {
     res.status(401).json({ success: false, error: error.message });
   }
 };
+
+exports.checkID = async (req, res, next) => {
+  const { token } = req.cookies;
+  if (!token) {
+    req.user = 'undifined';
+    next();
+  } else {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id).select(
+        'avatar cloudinary_id _id name email password status_pendidikan no_telepon',
+      );
+      if (!user) {
+        req.user = 'undifined';
+      } else {
+        req.user = user;
+      }
+      next();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};

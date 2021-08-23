@@ -29,6 +29,7 @@
     "jsdom": "^17.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.7",
+    "mongoose-double": "0.0.1",
     "mongoose-slug-generator": "^1.0.4",
     "multer": "^1.4.3"
   },
