@@ -31,9 +31,9 @@ module.exports = {
         upload_preset: 'StudentGo',
       });
 
+      const user = req.user._id;
+
       const {
-        //! nanti diambil dari req.user => jwt => GANTI REQ.BODY.USER DENGAN REQ.USER DAN HAPUS USER DI BODY POSTMAN
-        user,
         title,
         broadcast_media,
         numberOfTicket,
@@ -169,8 +169,10 @@ module.exports = {
   getEventContentBySlug: async (req, res) => {
     try {
       const { slug } = req.params;
-      //! nanti diganti dengan req.user => ganti req.params dengan req.user dan hapus params di ROUTES dan POSTMAN
-      const { userId } = req.params;
+
+      console.log(slug);
+
+      const userId = req.user._id;
 
       const event = await EventContent.findOne({ slug }).select(
         ' _id slug poster logo user title broadcast_media category description start_event end_event image_1 image_2 image_3 image_4 deadline date_start_event date_end_event registration_link numberOfTicket',

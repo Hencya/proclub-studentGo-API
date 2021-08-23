@@ -163,4 +163,4 @@ eventSchema.pre('validate', (next) => {
   next();
 });
 
-module.exports = mongoose.model('event', eventSchema);
+module.exports = mongoose.model('EventContent', eventSchema);

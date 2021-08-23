@@ -2,16 +2,29 @@ const ArchiveEvent = require('../models/ArchiveEvent');
 
 module.exports = {
   createEventArchive: async (req, res) => {
-    const eventId = req.body.trigger_id;
-
-    //! nanti diambil dari req.user => jwt => ganti req.body menjadi req.user dan hapus req.body userId di POSTMAN
-    const { userId } = req.body;
-
     try {
+      // ini triger-id nya pakek uang _id event
+      const eventId = req.body.trigger_id;
+
+      const userId = req.user._id;
+
+      if (userId === undefined) {
+        const error = new Error('User Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      if (eventId === undefined) {
+        const error = new Error('Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
       const newArchiveEvent = new ArchiveEvent({
         user: userId,
         event: eventId,
       });
+
       const savedArchiveEvent = await newArchiveEvent.save();
       res.status(201).json({
         status: 201,
@@ -25,25 +38,42 @@ module.exports = {
   },
 
   deleteEventArchive: async (req, res) => {
-    const archiveId = req.params.trigger_id;
-    //! nanti di ambil dari req.user => hapus req.params di ROUTES dan hapus juga params nya di postman
-    const { userId } = req.params;
-    const deletedArchive = await ArchiveEvent.findOneAndDelete({
-      _id: archiveId,
-      user: userId,
-    });
+    try {
+      // ini triger-id nya pakek uang _id archives
+      const archiveId = req.params.trigger_id;
+      const userId = req.user._id;
 
-    if (!deletedArchive) {
-      return res.status(404).json({ status: 404, message: 'Archive tidak ditemukan', result: false });
+      if (userId === undefined) {
+        const error = new Error('User Doesnt Have Archive Event');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      if (archiveId === undefined) {
+        const error = new Error('Archive Event Doesnt Exist');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      const deletedArchive = await ArchiveEvent.findOneAndDelete({
+        _id: archiveId,
+        user: userId,
+      });
+
+      if (!deletedArchive) {
+        return res.status(404).json({ status: 404, message: 'Archive tidak ditemukan', result: false });
+      }
+      res.status(200).json({ status: 200, message: 'Success Delete Archive', result: true });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: error });
     }
-    res.status(200).json({ status: 200, message: 'Success Delete Archive', result: true });
   },
 
   getAllArchive: async (req, res) => {
-    //! nanti diganti dengan req.user => jwt => dan hapus userId di req.body
-    const { userId } = req.body;
+    const userId = req.user._id;
     try {
-      const archives = await ArchiveEvent.find({ user: userId }).select('-__v').populate('event', '-__v');
+      const archives = await ArchiveEvent.find({ user: userId }).select('-__v').populate('EventContent', '-__v');
       if (archives.length < 1) {
         res.status(404).json({ status: 404, message: 'Fail Get All Archive', result: archives });
       }

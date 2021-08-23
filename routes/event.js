@@ -1,11 +1,12 @@
 const express = require('express');
 const upload = require('../utils/multer');
+const { protect } = require('../middleware/auth');
 
 const eventController = require('../controllers/eventController');
 
 const router = express.Router();
 
-router.post('/', upload.fields([
+router.post('/', protect, upload.fields([
   { name: 'poster', maxCount: 100 },
   { name: 'image1', maxCount: 100 },
   { name: 'image2', maxCount: 100 },
@@ -17,8 +18,8 @@ router.get('/', eventController.getAllEventContentSkipFive);
 router.get('/search', eventController.getEventContentByTitleWithSearching);
 router.get('/5-latest', eventController.getLatestEventContent);
 // router.post('/checkout', eventController.createCheckoutEvent);
+router.get('/:slug', protect, eventController.getEventContentBySlug);
+router.get('/tags/:tags', eventController.getEventContentByTags);
 router.get('/confirm/:slug', eventController.getEventContentBySlugConfirm);
-router.get('/:tags', eventController.getEventContentByTags);
-router.get('/:slug/:userId', eventController.getEventContentBySlug);
 
 module.exports = router;

@@ -22,6 +22,11 @@
         "no-await-in-loop":"off",
         "no-plusplus":"off",
         "eqeqeq":"off",
-        "no-underscore-dangle":"off"
+        "no-underscore-dangle":"off",
+        "no-useless-escape":"off",
+        "block-scoped-var":"off",
+        "no-var":"off",
+        "vars-on-top":"off"
+        
     }
 }
