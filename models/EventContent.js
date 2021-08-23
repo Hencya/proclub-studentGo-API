@@ -34,6 +34,10 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  deadline: {
+    type: Date,
+    required: true,
+  },
   date_end_event: {
     type: Date,
     required: true,
@@ -67,6 +71,10 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   no_hp: {
+    type: String,
+    required: true,
+  },
+  organizer_name: {
     type: String,
     required: true,
   },
@@ -124,6 +132,15 @@ const eventSchema = new mongoose.Schema({
     required: true,
     sparse: true,
   },
+  registration_link: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  numberOfTicket: {
+    type: Number,
+    required: true,
+  },
   slug: {
     type: String,
     slug: 'title',
@@ -146,4 +163,4 @@ eventSchema.pre('validate', (next) => {
   next();
 });
 
-module.exports = mongoose.model('event', eventSchema);
+module.exports = mongoose.model('EventContent', eventSchema);
