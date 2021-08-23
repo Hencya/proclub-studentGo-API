@@ -1,6 +1,7 @@
 const cloudinary = require('../utils/cloudinary');
 const EventContent = require('../models/EventContent');
 const ArchiveEvent = require('../models/ArchiveEvent');
+const EventOwner = require('../models/EventOwner');
 
 module.exports = {
   createEventContent: async (req, res) => {
@@ -308,8 +309,25 @@ module.exports = {
     }
   },
 
-  // createCheckoutEvent: async (req, res) => {
-
-  // },
+  createCheckoutEvent: async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const user = req.user._id;
+      const event = await EventContent.findOne({ slug }).select('_id');
+      const newOwner = new EventOwner({
+        user,
+        event: event._id,
+      });
+      const savedOwner = await newOwner.save();
+      res.status(201).json({
+        status: 201,
+        message: 'Success Purchase The Course',
+        result: savedOwner,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
+    }
+  },
 
 };

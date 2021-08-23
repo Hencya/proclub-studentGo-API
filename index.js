@@ -19,10 +19,16 @@ mongoose.connect(process.env.MONGO_URI, {
   console.log('Connected to MongoDB');
 }).catch((err) => console.log(err));
 
-// routes
-const eventContentRoutes = require('./routes/event');
+// routes user
 const authRoutes = require('./routes/auth');
+// routes event
+const eventContentRoutes = require('./routes/event');
 const archivesEventRoutes = require('./routes/archivesEvent');
+// routes Scholarship
+const scholarshipRoutes = require('./routes/scholarships/scholarships');
+const archivesScholarshipRoutes = require('./routes/scholarships/archivesScholarship');
+// routes Course
+const courseRoutes = require('./routes/courses/courses');
 
 // middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,9 +45,16 @@ if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
 
+// user
 app.use('/api/v1/users', authRoutes);
+// event
 app.use('/api/v1/events', eventContentRoutes);
 app.use('/api/v1/archives-events', archivesEventRoutes);
+// scholarship
+app.use('/api/v1/scholarships', scholarshipRoutes);
+app.use('/api/v1/archives-scholarship', archivesScholarshipRoutes);
+// course
+app.use('/api/v1/courses', courseRoutes);
 
 app.listen(process.env.PORT_DEV || process.env.PORT_PROD, () => {
   console.log(`Server bejalan di http://${process.env.HOST_DEV}:${process.env.PORT_DEV}`);
