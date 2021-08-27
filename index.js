@@ -4,10 +4,13 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const cors = require('cors')
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors())
 
 // connecting to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
