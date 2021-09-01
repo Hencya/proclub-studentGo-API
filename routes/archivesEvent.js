@@ -5,7 +5,7 @@ const { protect } = require('../middleware/auth');
 router.post('/', protect, archEventContentController.createEventArchive);
 
 router.get('/', protect, archEventContentController.getAllArchive);
-
-router.delete('/:trigger_id ', protect, archEventContentController.deleteEventArchive);
+// trigger_id yang Delete adalah arch id
+router.delete('/:trigger_id', protect, archEventContentController.deleteEventArchive);
 
 module.exports = router;
