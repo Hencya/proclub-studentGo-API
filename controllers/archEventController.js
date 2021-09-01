@@ -73,7 +73,7 @@ module.exports = {
   getAllArchive: async (req, res) => {
     const userId = req.user._id;
     try {
-      const archives = await ArchiveEvent.find({ user: userId }).select('-__v').populate('EventContent', '-__v');
+      const archives = await ArchiveEvent.find({ user: userId }).select('-__v').populate('event', '-__v');
       if (archives.length < 1) {
         res.status(404).json({ status: 404, message: 'Fail Get All Archive', result: archives });
       }
