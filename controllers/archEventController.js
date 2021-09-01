@@ -39,7 +39,7 @@ module.exports = {
 
   deleteEventArchive: async (req, res) => {
     try {
-      // ini triger-id nya pakek uang _id archives
+      // ini triger-id nya pakek yang _id archives
       const archiveId = req.params.trigger_id;
       const userId = req.user._id;
 
